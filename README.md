@@ -47,7 +47,7 @@ The dataset used for training, to generate the new model based on the recognitio
 Here is the tool repository: [face-mask](https://github.com/Prodesire/face-mask/blob/master/README.md)
 
 ### Example of Fer2013 masked version
-![Diagramm](Fer2013_Masked.png)
+![Diagramm](images/Fer2013_Masked.png)
 
 ## Authors
 Raffaele Martone, University of Salerno (Italy), 2022.
