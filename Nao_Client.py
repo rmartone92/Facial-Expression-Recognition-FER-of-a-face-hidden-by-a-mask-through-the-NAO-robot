@@ -13,69 +13,82 @@ PORT = 9559
 
 # Create a proxy to ALPhotoCapture
 photoCaptureProxy = ALProxy("ALPhotoCapture", IP, PORT)
-# Take 3 pictures in VGA and store them in /home/nao/recordings/cameras/
+
+# Take one pictures in VGA and store them in /home/nao/recordings/cameras/
+
 tts = ALProxy("ALTextToSpeech", IP, PORT)
-tts.say("Hello!")
+
+# NAO speaks
+
+tts.say("Hello !")
+
 tts.say("I will recognize your emotion !")
+
 tts.say("Just a moment I'll look at you and tell you !")
 
-# tts=ALProxy("ALTextToSpeech", IP, PORT)
 tts.say("Say Cheeeeeese !")
 
 print("NAO is taking the picture, try not to move!")
 
 photoCaptureProxy.setResolution(2)
-photoCaptureProxy.setPictureFormat("jpg")
-photoCaptureProxy.takePictures(3, '/home/nao/recordings/cameras/', "image")
+photoCaptureProxy.setPictureFormat("png")
+photoCaptureProxy.takePictures(1, '/home/nao/recordings/cameras/', "image")
 
 tts.say("Picture taken !")
 
 print("NAO took the picture!")
 
-# This call returns ['/home/nao/recordings/cameras/image_0.jpg', '/home/nao/recordings/cameras/image_1.jpg', '/home/nao/recordings/cameras/image_2.jpg']
+# This call returns ['/home/nao/recordings/cameras/image_0.jpg']
 
+# Download from the internal memory of NAO, of the photo just taken
 
-# Download dalla memoria interna di NAO, della foto appena scattata
+# Credentials to enter NAO's memory:
 
 NAO_USERNAME = "nao"
 NAO_PASSWORD = "nao6"
 
-# Importo i log
-logging.basicConfig()
-log = logging.getLogger("provoTrasferimentoDati")
-log.setLevel(logging.DEBUG)
-log.info("Prova del log")
+# Log
 
-log.info("Testo il trasferimento del file")
+logging.basicConfig()
+log = logging.getLogger("I try data transfer")
+log.setLevel(logging.DEBUG)
+log.info("Test the logs")
+
+log.info("I try the file transfer")
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-log.info("Provo la connessione")
+log.info("I try the connection")
 
 ssh.connect(IP, username=NAO_USERNAME, password=NAO_PASSWORD)
-log.info("Connessione stabilita")
-log.info("Provo a ad aprire la connessine sftp")
+log.info("Connection established")
+log.info("I try to open the sftp connection")
 sftp = ssh.open_sftp()
-log.info("Connessione aperta")
-localpath = r"C:\Users\CasaLab1\PycharmProjects\NAOTesiProject\foto.png"  # Attention at the path
-remotepath = '/home/nao/recordings/cameras/image_1.jpg'
-log.info("faccio il get")
+log.info("Open connection")
+localpath = r"C:\Users\CasaLab1\PycharmProjects\NAOTesiProject\photo_taken.png"  # Attention at the path
+
+#Photo taken by NAO
+#This photo will remain local and will be overwritten every time
+
+remotepath = '/home/nao/recordings/cameras/image_0.jpg'
+log.info("I do the get")
 sftp.get(remotepath, localpath)
-log.info("File trasferito")
-log.info("Chiudo le connessioni")
+log.info("File transferred")
+log.info("I close the connections later")
+
 #sftp.close()
 #ssh.close()
-log.info("Connessione chiusa")
-log.info("Programma terminato")
+# They were closed after
 
-##########################
+# Sending photos to the server
 
 import socket
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET = IP, SOCK_STREAM = TCP
 client.connect(('127.0.0.1', 10000))  #localhost='127.0.0.1'
 
-file = open('foto.png', 'rb')  #Foto scattata da NAO
+file = open('photo_taken.png', 'rb')
+
 image_nao = file.read(2048)
 
 while image_nao:
@@ -85,27 +98,32 @@ while image_nao:
 file.close()
 client.close()
 
-##########################
+# Photo sent, Nao asks to wait a moment
 
 tts.say("One moment, please !")
+
 time.sleep(6)
 
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
+# The client receives the recognize result
+
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET = IP, SOCK_STREAM = TCP
 client.connect(('127.0.0.1', 22222))  # localhost='127.0.0.1'
 
-msg = client.recv(1024)   # Ricevera' la stringa del messaggio di risposta dal server a 1024 bit
+msg = client.recv(1024)   # It will receive the response message string from the server at 1024 bits
 
 while msg:
   print('Result of recognition: ' + msg.decode())
   esito = msg.decode()
-  msg = client.recv(1024)   # Verra' eseguito finche' la stringa del messaggio e' vuota
+  msg = client.recv(1024)   # It will be executed as long as the message string is empty
 
   tts.say('Your recognized emotion is:: ' + str(esito)) #NAO states the result of the recognition
 
-client.close()  # Disconnettera' il client
+client.close()  # The client will disconnect
+
+# Close connections
 
 sftp.close()
 ssh.close()
