@@ -36,7 +36,7 @@ Nao_Client.ipynb   # File for the Client part of the NAO robot
 [Documents NAO multilanguage](https://www.softbankrobotics.com/emea/en/support/nao-6/downloads-documents)
 
 ## Client-Server operating diagram
-![Diagramm](images/DiagrammaReadme.png)
+![Diagramm](Socket.png)
 
 ## Neural network used
 The neural network used is the [Residual Masking Network](https://github.com/phamquiluan/ResidualMaskingNetwork), trained differently, not with its FER2013 dataset, but using masked FER2013.
