@@ -1,7 +1,7 @@
 # Facial Expression Recognition (FER) of a face hidden by a mask, through the NAO robot
 [![pypi package](https://img.shields.io/badge/version-v3.0.5-blue)](https://pypi.org/project/rmn)
 
-![NAO](images/CopertinaReadme.png)
+![NAO](images/Readme_NAO_Ita-01.png)
 
 ## Introduction
 
